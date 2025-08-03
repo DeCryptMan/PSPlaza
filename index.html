@@ -14,11 +14,11 @@
             font-family: 'Inter', sans-serif;
             background-color: #0A0A10;
             color: #E0E0E0;
-            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-x: hidden;
         }
         #hero-section {
             position: relative;
-            height: 90vh;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -32,12 +32,13 @@
             width: 100%;
             height: 100%;
             z-index: 1;
+            background: radial-gradient(circle, rgba(10, 10, 30, 1) 0%, rgba(10, 10, 16, 1) 70%);
         }
         .hero-content {
             position: relative;
             z-index: 2;
-            background: rgba(10, 10, 16, 0.5);
-            backdrop-filter: blur(2px);
+            /* Убрали размытие и сделали фон чуть прозрачнее */
+            background: rgba(10, 10, 16, 0.25);
             padding: 2rem;
             border-radius: 1rem;
         }
@@ -48,8 +49,9 @@
             transition: all 0.3s ease;
         }
         .card-bg:hover {
-            background-color: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(0, 112, 209, 0.5);
+            transform: translateY(-8px);
+            box-shadow: 0 0 20px rgba(0, 112, 209, 0.4), 0 0 40px rgba(0, 112, 209, 0.2);
+            border-color: rgba(0, 112, 209, 0.5);
         }
         .btn-primary {
             background: #0070D1;
@@ -86,6 +88,21 @@
         .nav-link:hover::after {
             width: 100%;
         }
+        /* Новые анимации для текста */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0; /* Начинается невидимым */
+        }
     </style>
 </head>
 <body>
@@ -96,11 +113,10 @@
             <div class="flex items-center justify-between h-20">
                 <a href="#" class="text-3xl font-bold text-white">PS <span class="text-[#0070D1]">Plaza</span></a>
                 <nav class="hidden md:flex items-center space-x-8">
-                    <a href="#" class="nav-link text-gray-200 hover:text-white transition">Գլխավոր</a>
-                    <a href="#" class="nav-link text-gray-200 hover:text-white transition">Խաղեր</a>
+                    <a href="#hero-section" class="nav-link text-gray-200 hover:text-white transition">Գլխավոր</a>
+                    <a href="#games-section" class="nav-link text-gray-200 hover:text-white transition">Խաղեր</a>
                     <a href="#" class="nav-link text-gray-200 hover:text-white transition">Բաժանորդագրություններ</a>
-                    <a href="#" class="nav-link text-gray-200 hover:text-white transition">Ինչպես է աշխատում</a>
-                    <a href="#" class="nav-link text-gray-200 hover:text-white transition">Մեր մասին</a>
+                    <a href="#how-it-works" class="nav-link text-gray-200 hover:text-white transition">Ինչպես է աշխատում</a>
                 </nav>
                 <div class="flex items-center space-x-4">
                     <button class="text-gray-300 hover:text-white transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></button>
@@ -116,14 +132,14 @@
         <section id="hero-section">
             <canvas id="bg-canvas"></canvas>
             <div class="hero-content text-white">
-                <h1 class="text-4xl md:text-6xl font-black uppercase tracking-wider">Ձեր պորտալը դեպի խաղերի աշխարհ</h1>
-                <p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-gray-300">PlayStation խաղերի ամենամեծ ընտրանին Հայաստանում։ Գնեք խաղի թվային տարբերակը և սկսեք ձեր արկածը հիմա։</p>
-                <a href="#" class="mt-8 inline-block btn-primary font-bold py-4 px-10 rounded-lg text-lg uppercase">Դիտել բոլոր խաղերը</a>
+                <h1 class="text-4xl md:text-6xl font-black uppercase tracking-wider animate-fade-in-up" style="animation-delay: 0.2s;">Ձեր պորտալը դեպի խաղերի աշխարհ</h1>
+                <p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-gray-300 animate-fade-in-up" style="animation-delay: 0.5s;">PlayStation խաղերի ամենամեծ ընտրանին Հայաստանում։ Գնեք խաղի թվային տարբերակը և սկսեք ձեր արկածը հիմա։</p>
+                <a href="#games-section" class="mt-8 inline-block btn-primary font-bold py-4 px-10 rounded-lg text-lg uppercase animate-fade-in-up" style="animation-delay: 0.8s;">Դիտել բոլոր խաղերը</a>
             </div>
         </section>
 
         <!-- How It Works Snippet -->
-        <section class="py-12 bg-black/50">
+        <section id="how-it-works" class="py-16 sm:py-20 bg-black/50">
             <div class="container mx-auto px-4 text-center">
                 <h2 class="text-3xl font-bold text-white">Ի՞նչ է <span class="text-[#0070D1]">Game Sharing</span>-ը</h2>
                 <p class="mt-4 max-w-3xl mx-auto text-gray-300 leading-relaxed">
@@ -131,17 +147,40 @@
                 </p>
             </div>
         </section>
+        
+        <!-- Advantages Section -->
+        <section class="py-16 sm:py-20 bg-[#0A0A10]">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+                    <div class="flex flex-col items-center">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-[#0070D1] bg-opacity-20 mb-4"><svg class="h-8 w-8 text-[#00E676]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01" /></svg></div>
+                        <h3 class="text-xl font-bold text-white">Լավագույն գներ</h3>
+                        <p class="mt-2 text-gray-400">Մենք առաջարկում ենք ամենամրցունակ գները շուկայում։</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-[#0070D1] bg-opacity-20 mb-4"><svg class="h-8 w-8 text-[#00E676]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg></div>
+                        <h3 class="text-xl font-bold text-white">Ակնթարթային առաքում</h3>
+                        <p class="mt-2 text-gray-400">Ստացեք ձեր խաղը վճարումից անմիջապես հետո։</p>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="flex items-center justify-center h-16 w-16 rounded-full bg-[#0070D1] bg-opacity-20 mb-4"><svg class="h-8 w-8 text-[#00E676]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 20.944a11.955 11.955 0 018.618-3.04 11.955 11.955 0 018.618 3.04 12.02 12.02 0 00-3-14.964z" /></svg></div>
+                        <h3 class="text-xl font-bold text-white">100% Անվտանգ</h3>
+                        <p class="mt-2 text-gray-400">Մեր բոլոր ապրանքները լիցենզավորված են և անվտանգ։</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Featured Products Section -->
-        <section class="py-16 sm:py-24">
+        <section id="games-section" class="py-16 sm:py-24">
             <div class="container mx-auto px-4">
                 <h2 class="text-3xl font-bold mb-10 section-title">Թոփ վաճառք</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    <!-- Product Cards remain the same -->
-                    <div class="card-bg rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2">
-                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=Spider-Man+2" alt="Խաղի կազմ" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/333/fff?text=Image+Not+Found';">
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    <!-- Game Card 1 -->
+                    <div class="card-bg rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=Spider-Man+2" alt="Marvel's Spider-Man 2" class="w-full h-64 object-cover">
                         <div class="p-6">
-                            <h3 class="text-xl font-semibold text-white">Marvel's Spider-Man 2</h3>
+                            <h3 class="text-xl font-semibold text-white h-14">Marvel's Spider-Man 2</h3>
                             <p class="text-sm text-gray-400 mt-1">PS5</p>
                             <div class="flex justify-between items-center mt-4">
                                 <p class="text-2xl price-tag">34,900֏</p>
@@ -149,10 +188,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-bg rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2">
-                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=God+of+War" alt="Խաղի կազմ" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/333/fff?text=Image+Not+Found';">
+                    <!-- Game Card 2 -->
+                    <div class="card-bg rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=God+of+War" alt="God of War Ragnarök" class="w-full h-64 object-cover">
                         <div class="p-6">
-                            <h3 class="text-xl font-semibold text-white">God of War Ragnarök</h3>
+                            <h3 class="text-xl font-semibold text-white h-14">God of War Ragnarök</h3>
                             <p class="text-sm text-gray-400 mt-1">PS5 / PS4</p>
                             <div class="flex justify-between items-center mt-4">
                                 <p class="text-2xl price-tag">29,900֏</p>
@@ -160,10 +200,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-bg rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2">
-                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=FC+24" alt="Խաղի կազմ" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/333/fff?text=Image+Not+Found';">
+                    <!-- Game Card 3 -->
+                    <div class="card-bg rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=FC+24" alt="EA Sports FC 24" class="w-full h-64 object-cover">
                         <div class="p-6">
-                            <h3 class="text-xl font-semibold text-white">EA Sports FC 24</h3>
+                            <h3 class="text-xl font-semibold text-white h-14">EA Sports FC 24</h3>
                             <p class="text-sm text-gray-400 mt-1">PS5</p>
                             <div class="flex justify-between items-center mt-4">
                                 <p class="text-2xl price-tag">31,900֏</p>
@@ -171,10 +212,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-bg rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2">
-                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=The+Last+of+Us" alt="Խաղի կազմ" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/333/fff?text=Image+Not+Found';">
+                    <!-- Game Card 4 -->
+                    <div class="card-bg rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=The+Last+of+Us" alt="The Last of Us Part I" class="w-full h-64 object-cover">
                         <div class="p-6">
-                            <h3 class="text-xl font-semibold text-white">The Last of Us Part I</h3>
+                            <h3 class="text-xl font-semibold text-white h-14">The Last of Us Part I</h3>
                             <p class="text-sm text-gray-400 mt-1">PS5</p>
                             <div class="flex justify-between items-center mt-4">
                                 <p class="text-2xl price-tag">28,900֏</p>
@@ -190,8 +232,7 @@
     <!-- Footer -->
     <footer class="bg-black mt-16 border-t border-gray-800">
         <div class="container mx-auto px-4 py-12">
-            <!-- Footer content remains the same -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                 <div>
                     <h3 class="text-xl font-bold text-white">PS Plaza</h3>
                     <p class="mt-2 text-gray-400">Ձեր հուսալի գործընկերը PlayStation-ի աշխարհում։</p>
@@ -199,7 +240,7 @@
                 <div>
                     <h4 class="font-semibold text-white">Նավիգացիա</h4>
                     <ul class="mt-4 space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white">Խաղեր</a></li>
+                        <li><a href="#games-section" class="text-gray-400 hover:text-white">Խաղեր</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white">Բաժանորդագրություններ</a></li>
                         <li><a href="#" class="text-gray-400 hover:text-white">Գնման պայմաններ</a></li>
                     </ul>
@@ -214,6 +255,11 @@
                 </div>
                 <div>
                     <h4 class="font-semibold text-white">Հետևեք մեզ</h4>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M22.46,6C21.69,6.35 20.86,6.58 20,6.69C20.88,6.16 21.56,5.32 21.88,4.31C21.05,4.81 20.13,5.16 19.16,5.36C18.37,4.5 17.26,4 16,4C13.65,4 11.73,5.92 11.73,8.29C11.73,8.63 11.77,8.96 11.84,9.27C8.28,9.09 5.11,7.38 3,4.79C2.63,5.42 2.42,6.16 2.42,6.94C2.42,8.43 3.17,9.75 4.33,10.5C3.62,10.5 2.96,10.3 2.38,10C2.38,10 2.38,10 2.38,10.03C2.38,12.11 3.86,13.85 5.82,14.24C5.46,14.34 5.08,14.39 4.69,14.39C4.42,14.39 4.15,14.36 3.89,14.31C4.43,16 6,17.26 7.89,17.29C6.43,18.45 4.58,19.13 2.56,19.13C2.22,19.13 1.88,19.11 1.54,19.07C3.44,20.29 5.7,21 8.12,21C16,21 20.33,14.46 20.33,8.79C20.33,8.6 20.33,8.42 20.32,8.23C21.16,7.63 21.88,6.87 22.46,6Z"></path></svg></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 9,21.5C9.5,21.58 9.67,21.27 9.67,21C9.67,20.77 9.66,20.14 9.66,19.5C7.33,20 6.67,18.33 6.67,18.33C6.17,17.08 5.33,16.67 5.33,16.67C4.33,16 5.42,16 5.42,16C6.5,16.08 7.08,17.08 7.08,17.08C8.08,18.83 9.83,18.33 10.5,18.08C10.58,17.42 10.83,17 11.17,16.75C8.83,16.5 6.33,15.58 6.33,11.5C6.33,10.33 6.75,9.42 7.42,8.67C7.33,8.42 6.92,7.17 7.5,5.67C7.5,5.67 8.42,5.42 10.5,6.83C11.33,6.58 12.25,6.42 13.17,6.42C14.08,6.42 15,6.58 15.83,6.83C17.92,5.42 18.83,5.67 18.83,5.67C19.42,7.17 19,8.42 18.92,8.67C19.58,9.42 20,10.33 20,11.5C20,15.58 17.5,16.5 15.17,16.75C15.58,17.08 15.92,17.83 15.92,18.83C15.92,20.17 15.92,21.25 15.92,21.5C15.92,21.77 16.08,22.08 16.67,22C20.08,20.58 22,16.92 22,12A10,10 0 0,0 12,2Z"></path></svg></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z"></path></svg></a>
+                    </div>
                 </div>
             </div>
             <div class="mt-8 border-t border-gray-800 pt-8 text-center text-gray-500">
@@ -223,120 +269,68 @@
     </footer>
 
     <script>
-        // Three.js animation script
-        let scene, camera, renderer, particleSystems = [];
-        let mouseX = 0, mouseY = 0;
-        let windowHalfX = window.innerWidth / 2;
-        let windowHalfY = window.innerHeight / 2;
+        // --- PS5 Style Animation Script ---
+        let scene, camera, renderer, particles;
+        const particleCount = 5000;
+        const positions = new Float32Array(particleCount * 3);
+        const velocities = new Float32Array(particleCount * 3);
 
-        // --- Texture Generation ---
-        // Creates a texture for a shape using canvas
-        function createShapeTexture(shape) {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = 64;
-            canvas.height = 64;
-            context.beginPath();
-            context.fillStyle = 'rgba(0, 112, 209, 0.9)'; // PlayStation blue
-            
-            switch(shape) {
-                case 'circle':
-                    context.arc(32, 32, 28, 0, 2 * Math.PI);
-                    break;
-                case 'square':
-                    context.rect(4, 4, 56, 56);
-                    break;
-                case 'triangle':
-                    context.moveTo(32, 4);
-                    context.lineTo(60, 56);
-                    context.lineTo(4, 56);
-                    context.closePath();
-                    break;
-                case 'cross':
-                    context.rect(24, 4, 16, 56);
-                    context.rect(4, 24, 56, 16);
-                    break;
-            }
-            context.fill();
-            return new THREE.CanvasTexture(canvas);
-        }
+        let mouseX = 0;
+        let windowHalfX = window.innerWidth / 2;
 
         function init() {
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 3000);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 2000);
             camera.position.z = 1000;
 
             const canvas = document.getElementById('bg-canvas');
-            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setClearColor(0x000000, 0);
 
-            // --- Mobile Optimization ---
-            const isMobile = window.innerWidth < 768;
-            const baseParticleCount = isMobile ? 50 : 100;
+            // Create particle geometry
+            const geometry = new THREE.BufferGeometry();
 
-            // --- Create Particle Systems for each Shape ---
-            const shapes = ['circle', 'square', 'triangle', 'cross'];
-            const shapeTextures = {
-                'circle': createShapeTexture('circle'),
-                'square': createShapeTexture('square'),
-                'triangle': createShapeTexture('triangle'),
-                'cross': createShapeTexture('cross'),
-            };
+            for (let i = 0; i < particleCount; i++) {
+                // Position
+                positions[i * 3] = Math.random() * 2000 - 1000;
+                positions[i * 3 + 1] = Math.random() * 2000 - 1000;
+                positions[i * 3 + 2] = Math.random() * 2000 - 1000;
+                // Velocity
+                velocities[i * 3] = 0;
+                velocities[i * 3 + 1] = 0;
+                velocities[i * 3 + 2] = Math.random() * 2 + 1; // Speed towards camera
+            }
 
-            shapes.forEach(shape => {
-                const geometry = new THREE.BufferGeometry();
-                const positions = [];
-                
-                for (let i = 0; i < baseParticleCount; i++) {
-                    const x = Math.random() * 2000 - 1000;
-                    const y = Math.random() * 2000 - 1000;
-                    const z = Math.random() * 1500 - 750;
-                    positions.push(x, y, z);
-                }
-                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-
-                const material = new THREE.PointsMaterial({
-                    size: isMobile ? 25 : 35,
-                    map: shapeTextures[shape],
-                    blending: THREE.AdditiveBlending,
-                    depthTest: false,
-                    transparent: true,
-                    opacity: 0.7
-                });
-
-                const points = new THREE.Points(geometry, material);
-                points.rotation.x = Math.random() * 6;
-                points.rotation.y = Math.random() * 6;
-                points.rotation.z = Math.random() * 6;
-                scene.add(points);
-                particleSystems.push(points);
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            // Create particle material
+            const material = new THREE.PointsMaterial({
+                color: 0x0070D1,
+                size: 2,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                opacity: 0.7
             });
 
-            // --- Event Listeners for Mouse and Touch ---
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            // Event Listeners
             document.addEventListener('mousemove', onPointerMove);
-            document.addEventListener('touchmove', onPointerMove);
             window.addEventListener('resize', onWindowResize, false);
         }
 
         function onWindowResize() {
             windowHalfX = window.innerWidth / 2;
-            windowHalfY = window.innerHeight / 2;
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            adjustHeroHeight();
         }
 
         function onPointerMove(event) {
             if (event.isPrimary === false) return;
-            // Check if it's a touch event
-            if (event.touches) {
-                mouseX = event.touches[0].clientX - windowHalfX;
-                mouseY = event.touches[0].clientY - windowHalfY;
-            } else {
-                mouseX = event.clientX - windowHalfX;
-                mouseY = event.clientY - windowHalfY;
-            }
+            mouseX = event.clientX - windowHalfX;
         }
 
         function animate() {
@@ -345,24 +339,28 @@
         }
 
         function render() {
-            const time = Date.now() * 0.0001;
-            
-            camera.position.x += (mouseX - camera.position.x) * 0.05;
-            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            // Update camera rotation based on mouse
+            camera.position.x += (mouseX - camera.position.x) * 0.01;
             camera.lookAt(scene.position);
 
-            particleSystems.forEach((system, i) => {
-                // Each system rotates at a slightly different speed
-                system.rotation.y = time * (i * 0.05 + 0.1);
-                system.rotation.x = time * (i * 0.05 + 0.1);
-            });
+            // Animate particles
+            const positions = particles.geometry.attributes.position.array;
+            for (let i = 0; i < particleCount; i++) {
+                // Move particle forward
+                positions[i * 3 + 2] += velocities[i * 3 + 2];
 
+                // If particle is past camera, reset its position to the back
+                if (positions[i * 3 + 2] > 1000) {
+                    positions[i * 3 + 2] = -1000;
+                }
+            }
+            particles.geometry.attributes.position.needsUpdate = true;
+            
             renderer.render(scene, camera);
         }
         
         function adjustHeroHeight() {
             const heroSection = document.getElementById('hero-section');
-            const vh = window.innerHeight * 0.01;
             heroSection.style.height = `${window.innerHeight}px`;
         }
 
@@ -370,9 +368,8 @@
             adjustHeroHeight();
             init();
             animate();
-            window.addEventListener('resize', adjustHeroHeight, false);
+            window.addEventListener('resize', onWindowResize, false);
         }
-
     </script>
 </body>
 </html>
