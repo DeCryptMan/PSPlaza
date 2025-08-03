@@ -14,6 +14,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #0A0A10;
             color: #E0E0E0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
         #hero-section {
             position: relative;
@@ -223,84 +224,119 @@
 
     <script>
         // Three.js animation script
-        let scene, camera, renderer, particles;
+        let scene, camera, renderer, particleSystems = [];
         let mouseX = 0, mouseY = 0;
-        const windowHalfX = window.innerWidth / 2;
-        const windowHalfY = window.innerHeight / 2;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+
+        // --- Texture Generation ---
+        // Creates a texture for a shape using canvas
+        function createShapeTexture(shape) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 64;
+            canvas.height = 64;
+            context.beginPath();
+            context.fillStyle = 'rgba(0, 112, 209, 0.9)'; // PlayStation blue
+            
+            switch(shape) {
+                case 'circle':
+                    context.arc(32, 32, 28, 0, 2 * Math.PI);
+                    break;
+                case 'square':
+                    context.rect(4, 4, 56, 56);
+                    break;
+                case 'triangle':
+                    context.moveTo(32, 4);
+                    context.lineTo(60, 56);
+                    context.lineTo(4, 56);
+                    context.closePath();
+                    break;
+                case 'cross':
+                    context.rect(24, 4, 16, 56);
+                    context.rect(4, 24, 56, 16);
+                    break;
+            }
+            context.fill();
+            return new THREE.CanvasTexture(canvas);
+        }
 
         function init() {
-            // Scene setup
             scene = new THREE.Scene();
-            
-            // Camera setup
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 3000);
             camera.position.z = 1000;
 
-            // Renderer setup
             const canvas = document.getElementById('bg-canvas');
             renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            // We set alpha: true and clearColor to 0x000000, 0 to make it transparent
             renderer.setClearColor(0x000000, 0);
 
+            // --- Mobile Optimization ---
+            const isMobile = window.innerWidth < 768;
+            const baseParticleCount = isMobile ? 50 : 100;
 
-            // Particles setup
-            const particleCount = 5000;
-            const positions = new Float32Array(particleCount * 3);
-            const colors = new Float32Array(particleCount * 3);
-            
-            const color = new THREE.Color();
+            // --- Create Particle Systems for each Shape ---
+            const shapes = ['circle', 'square', 'triangle', 'cross'];
+            const shapeTextures = {
+                'circle': createShapeTexture('circle'),
+                'square': createShapeTexture('square'),
+                'triangle': createShapeTexture('triangle'),
+                'cross': createShapeTexture('cross'),
+            };
 
-            for (let i = 0; i < particleCount; i++) {
-                const x = Math.random() * 2000 - 1000;
-                const y = Math.random() * 2000 - 1000;
-                const z = Math.random() * 2000 - 1000;
-
-                positions[i * 3] = x;
-                positions[i * 3 + 1] = y;
-                positions[i * 3 + 2] = z;
-
-                // Set particle colors (mostly blue and white)
-                const randomColor = Math.random();
-                if (randomColor > 0.9) {
-                    color.setRGB(1, 1, 1); // White
-                } else {
-                    color.setHex(0x0070D1); // PlayStation blue
+            shapes.forEach(shape => {
+                const geometry = new THREE.BufferGeometry();
+                const positions = [];
+                
+                for (let i = 0; i < baseParticleCount; i++) {
+                    const x = Math.random() * 2000 - 1000;
+                    const y = Math.random() * 2000 - 1000;
+                    const z = Math.random() * 1500 - 750;
+                    positions.push(x, y, z);
                 }
-                colors[i * 3] = color.r;
-                colors[i * 3 + 1] = color.g;
-                colors[i * 3 + 2] = color.b;
-            }
+                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
 
-            const geometry = new THREE.BufferGeometry();
-            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                const material = new THREE.PointsMaterial({
+                    size: isMobile ? 25 : 35,
+                    map: shapeTextures[shape],
+                    blending: THREE.AdditiveBlending,
+                    depthTest: false,
+                    transparent: true,
+                    opacity: 0.7
+                });
 
-            const material = new THREE.PointsMaterial({
-                size: 2,
-                vertexColors: true,
-                blending: THREE.AdditiveBlending,
-                transparent: true,
-                opacity: 0.8
+                const points = new THREE.Points(geometry, material);
+                points.rotation.x = Math.random() * 6;
+                points.rotation.y = Math.random() * 6;
+                points.rotation.z = Math.random() * 6;
+                scene.add(points);
+                particleSystems.push(points);
             });
 
-            particles = new THREE.Points(geometry, material);
-            scene.add(particles);
-
-            // Event Listeners
-            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            // --- Event Listeners for Mouse and Touch ---
+            document.addEventListener('mousemove', onPointerMove);
+            document.addEventListener('touchmove', onPointerMove);
             window.addEventListener('resize', onWindowResize, false);
         }
 
         function onWindowResize() {
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        function onDocumentMouseMove(event) {
-            mouseX = event.clientX - windowHalfX;
-            mouseY = event.clientY - windowHalfY;
+        function onPointerMove(event) {
+            if (event.isPrimary === false) return;
+            // Check if it's a touch event
+            if (event.touches) {
+                mouseX = event.touches[0].clientX - windowHalfX;
+                mouseY = event.touches[0].clientY - windowHalfY;
+            } else {
+                mouseX = event.clientX - windowHalfX;
+                mouseY = event.clientY - windowHalfY;
+            }
         }
 
         function animate() {
@@ -309,24 +345,25 @@
         }
 
         function render() {
-            const time = Date.now() * 0.00005;
-
-            // Camera movement based on mouse
+            const time = Date.now() * 0.0001;
+            
             camera.position.x += (mouseX - camera.position.x) * 0.05;
             camera.position.y += (-mouseY - camera.position.y) * 0.05;
             camera.lookAt(scene.position);
 
-            // Animate particles
-            particles.rotation.x = time * 0.2;
-            particles.rotation.y = time * 0.5;
+            particleSystems.forEach((system, i) => {
+                // Each system rotates at a slightly different speed
+                system.rotation.y = time * (i * 0.05 + 0.1);
+                system.rotation.x = time * (i * 0.05 + 0.1);
+            });
 
             renderer.render(scene, camera);
         }
         
-        // Ensure the hero section matches the canvas size on load and resize
         function adjustHeroHeight() {
             const heroSection = document.getElementById('hero-section');
-            heroSection.style.height = window.innerHeight + 'px';
+            const vh = window.innerHeight * 0.01;
+            heroSection.style.height = `${window.innerHeight}px`;
         }
 
         window.onload = function() {
