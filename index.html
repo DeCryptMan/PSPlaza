@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS Plaza - PlayStation խաղերի առցանց խանութ Հայաստանում</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0A0A10;
+            color: #E0E0E0;
+        }
+        #hero-section {
+            position: relative;
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+        #bg-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            background: rgba(10, 10, 16, 0.5);
+            backdrop-filter: blur(2px);
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+        .card-bg {
+            background-color: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        .card-bg:hover {
+            background-color: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(0, 112, 209, 0.5);
+        }
+        .btn-primary {
+            background: #0070D1;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(0, 112, 209, 0.5);
+        }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(0, 112, 209, 0.8);
+        }
+        .section-title {
+            border-left: 4px solid #0070D1;
+            padding-left: 1rem;
+        }
+        .price-tag {
+            color: #00E676;
+            font-weight: 700;
+        }
+        .nav-link {
+             position: relative;
+             padding-bottom: 4px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #0070D1;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="bg-black bg-opacity-50 backdrop-blur-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-20">
+                <a href="#" class="text-3xl font-bold text-white">PS <span class="text-[#0070D1]">Plaza</span></a>
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="nav-link text-gray-200 hover:text-white transition">Գլխավոր</a>
+                    <a href="#" class="nav-link text-gray-200 hover:text-white transition">Խաղեր</a>
+                    <a href="#" class="nav-link text-gray-200 hover:text-white transition">Բաժանորդագրություններ</a>
+                    <a href="#" class="nav-link text-gray-200 hover:text-white transition">Ինչպես է աշխատում</a>
+                    <a href="#" class="nav-link text-gray-200 hover:text-white transition">Մեր մասին</a>
+                </nav>
+                <div class="flex items-center space-x-4">
+                    <button class="text-gray-300 hover:text-white transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></button>
+                    <button class="text-gray-300 hover:text-white transition"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" /></svg></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section with Three.js -->
+        <section id="hero-section">
+            <canvas id="bg-canvas"></canvas>
+            <div class="hero-content text-white">
+                <h1 class="text-4xl md:text-6xl font-black uppercase tracking-wider">Ձեր պորտալը դեպի խաղերի աշխարհ</h1>
+                <p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-gray-300">PlayStation խաղերի ամենամեծ ընտրանին Հայաստանում։ Գնեք խաղի թվային տարբերակը և սկսեք ձեր արկածը հիմա։</p>
+                <a href="#" class="mt-8 inline-block btn-primary font-bold py-4 px-10 rounded-lg text-lg uppercase">Դիտել բոլոր խաղերը</a>
+            </div>
+        </section>
+
+        <!-- How It Works Snippet -->
+        <section class="py-12 bg-black/50">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold text-white">Ի՞նչ է <span class="text-[#0070D1]">Game Sharing</span>-ը</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-gray-300 leading-relaxed">
+                    Մենք առաջարկում ենք խաղերի թվային տարբերակներ Game Sharing (Ընդհանուր օգտահաշիվ) մոդելով։ Դուք ստանում եք օգտահաշիվ (account)՝ խաղը ձեր սեփական կոնսոլի վրա ներբեռնելու և ձեր անձնական պրոֆիլով խաղալու համար։ Սա 100% օրինական է, անվտանգ և շատ ավելի մատչելի։ Գնումից հետո դուք կստանաք մանրամասն հրահանգներ։
+                </p>
+            </div>
+        </section>
+
+        <!-- Featured Products Section -->
+        <section class="py-16 sm:py-24">
+            <div class="container mx-auto px-4">
+                <h2 class="text-3xl font-bold mb-10 section-title">Թոփ վաճառք</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    <!-- Product Cards remain the same -->
+                    <div class="card-bg rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2">
+                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=Spider-Man+2" alt="Խաղի կազմ" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/333/fff?text=Image+Not+Found';">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white">Marvel's Spider-Man 2</h3>
+                            <p class="text-sm text-gray-400 mt-1">PS5</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <p class="text-2xl price-tag">34,900֏</p>
+                                <button class="btn-primary text-sm font-bold py-2 px-4 rounded-md">Գնել</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-bg rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2">
+                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=God+of+War" alt="Խաղի կազմ" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/333/fff?text=Image+Not+Found';">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white">God of War Ragnarök</h3>
+                            <p class="text-sm text-gray-400 mt-1">PS5 / PS4</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <p class="text-2xl price-tag">29,900֏</p>
+                                <button class="btn-primary text-sm font-bold py-2 px-4 rounded-md">Գնել</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-bg rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2">
+                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=FC+24" alt="Խաղի կազմ" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/333/fff?text=Image+Not+Found';">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white">EA Sports FC 24</h3>
+                            <p class="text-sm text-gray-400 mt-1">PS5</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <p class="text-2xl price-tag">31,900֏</p>
+                                <button class="btn-primary text-sm font-bold py-2 px-4 rounded-md">Գնել</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-bg rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-2">
+                        <img src="https://placehold.co/400x500/1a1a2e/fff?text=The+Last+of+Us" alt="Խաղի կազմ" class="w-full h-64 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x500/333/fff?text=Image+Not+Found';">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white">The Last of Us Part I</h3>
+                            <p class="text-sm text-gray-400 mt-1">PS5</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <p class="text-2xl price-tag">28,900֏</p>
+                                <button class="btn-primary text-sm font-bold py-2 px-4 rounded-md">Գնել</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black mt-16 border-t border-gray-800">
+        <div class="container mx-auto px-4 py-12">
+            <!-- Footer content remains the same -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-white">PS Plaza</h3>
+                    <p class="mt-2 text-gray-400">Ձեր հուսալի գործընկերը PlayStation-ի աշխարհում։</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white">Նավիգացիա</h4>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Խաղեր</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Բաժանորդագրություններ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Գնման պայմաններ</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white">Աջակցություն</h4>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Կոնտակտներ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQ</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Երաշխիք</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-white">Հետևեք մեզ</h4>
+                </div>
+            </div>
+            <div class="mt-8 border-t border-gray-800 pt-8 text-center text-gray-500">
+                <p>&copy; 2024 PS Plaza. Բոլոր իրավունքները պաշտպանված են։</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Three.js animation script
+        let scene, camera, renderer, particles;
+        let mouseX = 0, mouseY = 0;
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            
+            // Camera setup
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+            camera.position.z = 1000;
+
+            // Renderer setup
+            const canvas = document.getElementById('bg-canvas');
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            // We set alpha: true and clearColor to 0x000000, 0 to make it transparent
+            renderer.setClearColor(0x000000, 0);
+
+
+            // Particles setup
+            const particleCount = 5000;
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            
+            const color = new THREE.Color();
+
+            for (let i = 0; i < particleCount; i++) {
+                const x = Math.random() * 2000 - 1000;
+                const y = Math.random() * 2000 - 1000;
+                const z = Math.random() * 2000 - 1000;
+
+                positions[i * 3] = x;
+                positions[i * 3 + 1] = y;
+                positions[i * 3 + 2] = z;
+
+                // Set particle colors (mostly blue and white)
+                const randomColor = Math.random();
+                if (randomColor > 0.9) {
+                    color.setRGB(1, 1, 1); // White
+                } else {
+                    color.setHex(0x0070D1); // PlayStation blue
+                }
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                opacity: 0.8
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            // Event Listeners
+            document.addEventListener('mousemove', onDocumentMouseMove, false);
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onDocumentMouseMove(event) {
+            mouseX = event.clientX - windowHalfX;
+            mouseY = event.clientY - windowHalfY;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            render();
+        }
+
+        function render() {
+            const time = Date.now() * 0.00005;
+
+            // Camera movement based on mouse
+            camera.position.x += (mouseX - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            // Animate particles
+            particles.rotation.x = time * 0.2;
+            particles.rotation.y = time * 0.5;
+
+            renderer.render(scene, camera);
+        }
+        
+        // Ensure the hero section matches the canvas size on load and resize
+        function adjustHeroHeight() {
+            const heroSection = document.getElementById('hero-section');
+            heroSection.style.height = window.innerHeight + 'px';
+        }
+
+        window.onload = function() {
+            adjustHeroHeight();
+            init();
+            animate();
+            window.addEventListener('resize', adjustHeroHeight, false);
+        }
+
+    </script>
+</body>
+</html>
